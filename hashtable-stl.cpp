@@ -10,11 +10,7 @@ class HashTable {
     typedef unsigned int uint;
     int M; //default is 101, should always be a prime number
     int numRecords;
-    struct record {
-        string key;
-        string value;
-        record(string k, string v) : key(k), value(v) { }
-    };
+    typedef std::pair<string, string> record;
     std::vector<std::list<record> > table;
     
     public:
@@ -50,7 +46,7 @@ unsigned int HashTable::horner(string key)
 void HashTable::put(string key, string value)
 {
     unsigned int mapped = horner(key);
-    table[mapped].push_front(record(key,value));
+    table[mapped].push_front(make_pair(key,value));
     numRecords++;
 }
 
@@ -59,11 +55,12 @@ std::tuple<bool, string, int> HashTable::get(string key)
    bool found = false;
    unsigned int mapped = horner(key);
    unsigned int position = 0;
+   cout<<"Fetching data associated with: "<<key<<endl;
    for (auto rec : table[mapped])
    {
-    if (rec.key == key)
+    if (rec.first == key)
     {
-      return make_tuple(true, rec.value, position);
+      return make_tuple(true, rec.second, position);
     }
     position++;
    }
