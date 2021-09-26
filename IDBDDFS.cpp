@@ -1,5 +1,7 @@
 #include <iostream>
 #include <map>
+#include <set>
+#include <unordered_set>
 #include <vector>
 #include <algorithm>
 #include "better-graph.h"
@@ -36,28 +38,24 @@ bool buildpath(string start, string finish, string intersect, map<string, string
     return true;
 }
 
-bool pathsCrossed(string start, string finish, map<string, bool> forward, map<string, bool> backward, map<string,string> path1, map<string,string> path2)
+bool pathsCrossed(string start, string finish, map<string,string> path1, map<string,string> path2)
 {
-    for (auto check : forward)
+    for (auto check : path1)
     {
-        for (auto against : backward)
+        if (path2.find(check.first) != path2.end())
         {
-           if (check == against)
-           {
              string intersect = check.first;
              cout<<"Found path intersection at: "<<intersect<<"\n";
              return buildpath(start, finish, intersect, path1, path2);
-           }
         }
     }
     return false;
 }
 
-bool depthLimitedDepthFirstSearch(Graph& G, string current_vertex, string target, int depth, int max_depth, map<string, bool>& seen, map<string, string>& camefrom)
+bool depthLimitedDepthFirstSearch(Graph& G, string current_vertex, string target, int depth, int max_depth, map<string, string>& camefrom)
 {
      int current_depth = depth;
      visit(current_vertex);
-     seen[current_vertex] = true; 
      if (current_vertex == target)
      {
        cout<<"Found!\n";
@@ -67,20 +65,19 @@ bool depthLimitedDepthFirstSearch(Graph& G, string current_vertex, string target
      {
      for (auto next : G.adjList[current_vertex])
      {
-        if (!seen[next.vertex])
+        if (camefrom.find(next.vertex) == camefrom.end())
         {
             camefrom[next.vertex] = current_vertex;
-            return depthLimitedDepthFirstSearch(G, next.vertex, target, current_depth + 1, max_depth, seen, camefrom);
+            return depthLimitedDepthFirstSearch(G, next.vertex, target, current_depth + 1, max_depth, camefrom);
         }
      }
      }
   return false;
 }
 
-bool dfs(Graph& G, string current, string target, map<string, bool> seen)
+bool dfs(Graph& G, string current, string target, map<string, string> path)
 {
     cout<<current<<" ";
-    seen[current] = true;
     if (current==target)
     {
         cout<<"found!\n";
@@ -88,9 +85,10 @@ bool dfs(Graph& G, string current, string target, map<string, bool> seen)
     }
     for (auto next : G.adjList[current])
     {
-        if (!seen[next.vertex])
+        if (path.find(next.vertex) == path.end())
         {
-            return dfs(G, next.vertex, target, seen);
+            path[next.vertex] = current;
+            return dfs(G, next.vertex, target, path);
         }
     }
     return false;
@@ -98,7 +96,7 @@ bool dfs(Graph& G, string current, string target, map<string, bool> seen)
 
 void depthFirstSearch(Graph& G, string start, string target)
 {
-    map<string, bool> seen;
+    map<string, string> seen;
     dfs(G, start, target, seen);
 }
 
@@ -106,14 +104,15 @@ void iterativeDeepeningBidirectionalDepthFirstSearch(Graph& G, string start, str
 {
     for (int depth_limit = 1; depth_limit <= max_depth; depth_limit++)
     {
-      map<string, bool> seen, seen2;
       map<string, string> path1, path2;
       cout<<"Starting Traversal. Depth Limit: "<<depth_limit<<endl;
-      depthLimitedDepthFirstSearch(G, start, finish, 0, depth_limit, seen, path1);
+      path1[start] = start;
+      path2[finish] = finish;
+      depthLimitedDepthFirstSearch(G, start, finish, 0, depth_limit, path1);
       cout<<endl;
-      depthLimitedDepthFirstSearch(G, finish, start, 0, depth_limit, seen2, path2); 
+      depthLimitedDepthFirstSearch(G, finish, start, 0, depth_limit, path2); 
       cout<<endl;
-      if (pathsCrossed(start, finish, seen, seen2, path1, path2))
+      if (pathsCrossed(start, finish, path1, path2))
       {
         cout<<"Brilliant!\n";
         break;
@@ -133,4 +132,5 @@ int main()
     G.addEdge("F", "G",1);
     G.showAdjList();
     iterativeDeepeningBidirectionalDepthFirstSearch(G, "A", "G", 10);
+    //depthFirstSearch(G, "A", "G");
 }
