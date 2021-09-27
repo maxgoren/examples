@@ -20,6 +20,10 @@ on www.maxgcoding.com the following is a short description of what each file is.
 - depth first search of a graph, iterative and recursive.
 ### hashtable-stl.h      
 - an associateive array for strings implemented as a hashtable.
+### IDBDDFS.CPP
+- an implmentation of iterative deepening bidirectional depth first search
+### IDBDDFSv2.cpp
+- same as above but more memory efficient by replacing std::map with std::vector
 ### linkedlist.cpp       
 - add, remove, and search operations for a singly linked list
 ### mergelist.c          
