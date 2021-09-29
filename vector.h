@@ -1,3 +1,5 @@
+#include <stdlib.h>
+
 typedef struct {
   int *arr;
   int max_size;
