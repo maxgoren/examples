@@ -34,3 +34,5 @@ on www.maxgcoding.com the following is a short description of what each file is.
 - a generic skip list
 ### treesort.cpp         
 - a sorting algorithm based derived from a binary search tree structure
+### vector.c
+- a dynamic array data structure for C
