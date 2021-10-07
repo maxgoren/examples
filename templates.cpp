@@ -8,7 +8,7 @@ using namespace std;
 
 //generic container selection sort
 template <typename Iterator>
-void strange_sort(Iterator begin, Iterator end)
+void selectionSort(Iterator begin, Iterator end)
 {
     for (auto i = begin; i != end; i++)
     {
@@ -53,5 +53,7 @@ int main()
     printArr(nums, 5);
     char *astring = "A string";
     printArr(astring, strlen(astring));
+    selectionSort(tosort.begin(), tosort.end());
+    printVec(tosort);
     return 0;
 }
