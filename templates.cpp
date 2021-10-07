@@ -6,6 +6,20 @@
 #include <algorithm>
 using namespace std;
 
+//generic container selection sort
+template <typename Iterator>
+void strange_sort(Iterator begin, Iterator end)
+{
+    for (auto i = begin; i != end; i++)
+    {
+        auto small = i;
+        for (auto p = i; p != end; p++)
+            if (*p < *small)
+                small = p;
+        if (*small < *i)
+            swap(*i, *small);
+    }
+}
 
 template <typename T>
 void printVec(vector<T> vec)
